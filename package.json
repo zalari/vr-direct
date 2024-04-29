@@ -6,12 +6,10 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "tsc && vite build && vite preview --host --open",
-    "lint": "biome lint ."
+    "lint": "biome lint ./src",
+    "format": "biome format --write ./src"
   },
-  "typeRoots": [
-    "node_modules/@types",
-    "src/@types"
-  ],
+  "typeRoots": ["node_modules/@types", "src/@types"],
   "devDependencies": {
     "@biomejs/biome": "1.7.1",
     "typescript": "5.4.5",
