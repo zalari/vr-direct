@@ -6,7 +6,7 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "tsc && vite build && vite preview --host --open",
-    "lint": "biome lint ./src",
+    "lint": "biome lint --apply ./src",
     "format": "biome format --write ./src"
   },
   "typeRoots": ["node_modules/@types", "src/@types"],
