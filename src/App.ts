@@ -43,7 +43,7 @@ export class App {
 		// const sessionManager = await xrHelper.enterXRAsync("immersive-vr", "local-floor");
 
 		const xrHelper = await this.scene.createDefaultXRExperienceAsync({
-			floorMeshes: [this.scene.getMeshByName('ground')]
+			// floorMeshes: [this.scene.getMeshByName('ground')]
 		});
 		xrHelper.baseExperience.camera.position = new Vector3(3, 3, 0);
 
