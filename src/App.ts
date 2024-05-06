@@ -23,7 +23,7 @@ export class App {
 	}
 
 	async run() {
-		this.debug(true);
+		this.debug(false);
 		await this.#xr();
 		this.engine.runRenderLoop(() => this.scene.render());
 	}

@@ -1,4 +1,4 @@
-import { type AbstractMesh, AssetsManager, type HDRCubeTexture, MeshAssetTask, type Scene, type Texture, TextureAssetTask, HDRCubeTextureAssetTask } from 'babylonjs';
+import { type AbstractMesh, AssetsManager, type HDRCubeTexture, MeshAssetTask, type Scene, type Texture, TextureAssetTask, HDRCubeTextureAssetTask, Vector3 } from 'babylonjs';
 
 const MODELS_URL = './models/';
 
@@ -32,6 +32,12 @@ export class Assets {
 			};
 			this.#assetsMngr.addMeshTask('Barstool', null, MODELS_URL, 'Barstool.glb');
 			this.#assetsMngr.addMeshTask('Table', null, MODELS_URL, 'BistroTable.glb');
+			const flag = this.#assetsMngr.addMeshTask('Flag', null, MODELS_URL, 'Flag.glb');
+			flag.onSuccess = (task) => {
+				task.loadedMeshes[0].position = new Vector3(0, 1.147, 0);
+				task.loadedMeshes[0].scaling = new Vector3(0.01, 0.01, 0.01);
+				task.loadedMeshes[0].rotation = new Vector3(0, 0, 0);
+			};
 			this.#assetsMngr.addMeshTask('Monitor', null, MODELS_URL, 'monitor.obj');
 
 			// Textures
@@ -39,11 +45,42 @@ export class Assets {
 			this.#assetsMngr.addTextureTask('FloorARM', './textures/concrete_floor_worn_001_arm_4k.jpg');
 			this.#assetsMngr.addTextureTask('FloorDiff', './textures/concrete_floor_worn_001_diff_4k.jpg');
 			this.#assetsMngr.addTextureTask('FloorNor', './textures/concrete_floor_worn_001_nor_gl_4k.jpg');
+
+			this.#assetsMngr.addTextureTask('DenimARM', './textures/denim_fabric_02_arm_2k.jpg');
+			this.#assetsMngr.addTextureTask('DenimDiff', './textures/denim_fabric_02_diff_2k.jpg');
+			this.#assetsMngr.addTextureTask('DenimNor', './textures/denim_fabric_02_nor_gl_2k.jpg');
+
+			this.#assetsMngr.addTextureTask('FabricARM', './textures/fabric_pattern_07_arm_2k.jpg');
+			this.#assetsMngr.addTextureTask('FabricDiff', './textures/fabric_pattern_07_col_1_2k.jpg');
+			this.#assetsMngr.addTextureTask('FabricNor', './textures/fabric_pattern_07_nor_gl_2k.jpg');
+
+			this.#assetsMngr.addTextureTask('PlywoodARM', './textures/plywood_arm_2k.jpg');
+			this.#assetsMngr.addTextureTask('PlywoodDiff', './textures/plywood_diff_2k.jpg');
+			this.#assetsMngr.addTextureTask('PlywoodNor', './textures/plywood_nor_gl_2k.jpg');
+
+			this.#assetsMngr.addTextureTask('LeatherRedARM', './textures/leather_red_02_arm_2k.jpg');
+			this.#assetsMngr.addTextureTask('LeatherRedDiff', './textures/leather_red_02_coll1_2k.jpg');
+			this.#assetsMngr.addTextureTask('LeatherRedNor', './textures/leather_red_02_nor_gl_2k.jpg');
+
+			this.#assetsMngr.addTextureTask('LeatherWhiteARM', './textures/leather_white_arm_2k.jpg');
+			this.#assetsMngr.addTextureTask('LeatherWhiteDiff', './textures/leather_white_diff_2k.jpg');
+			this.#assetsMngr.addTextureTask('LeatherWhiteNor', './textures/leather_white_nor_gl_2k.jpg');
+
+			this.#assetsMngr.addTextureTask('WornWoodARM', './textures/wood_table_worn_arm_2k.jpg');
+			this.#assetsMngr.addTextureTask('WornWoodDiff', './textures/wood_table_worn_diff_2k.jpg');
+			this.#assetsMngr.addTextureTask('WornWoodNor', './textures/wood_table_worn_nor_gl_2k.jpg');
+
+			this.#assetsMngr.addTextureTask('WoodPeelingPaintWeatheredARM', './textures/wood_peeling_paint_weathered_arm_2k.jpg');
+			this.#assetsMngr.addTextureTask('WoodPeelingPaintWeatheredDiff', './textures/wood_peeling_paint_weathered_diff_2k.jpg');
+			this.#assetsMngr.addTextureTask('WoodPeelingPaintWeatheredNor', './textures/wood_peeling_paint_weathered_nor_gl_2k.jpg');
+
 			this.#assetsMngr.addTextureTask('Banner1', './textures/banner1.webp');
 			this.#assetsMngr.addTextureTask('Banner2', './textures/banner2.webp');
 			this.#assetsMngr.addTextureTask('Banner3', './textures/banner3.webp');
 
-			this.#assetsMngr.addHDRCubeTextureTask('Skybox', './environment/autumn_field_puresky_8k.hdr', 2048);
+			this.#assetsMngr.addTextureTask('ZalariLogo', './textures/zalari-logo.png');
+
+			// this.#assetsMngr.addHDRCubeTextureTask('Skybox', './environment/autumn_field_puresky_2k.hdr', 2048);
 			// this.#assetsMngr.addHDRCubeTextureTask('Skybox', './environment/zwinger_night_16k.hdr', 4096);
 
 			// Events & handlers

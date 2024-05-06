@@ -1,4 +1,4 @@
-import { BackgroundMaterial, Color4, FreeCamera, HemisphericLight, MeshBuilder, PointerEventTypes, Scene, Texture, Vector3, type Engine, type HDRCubeTexture, type Mesh } from 'babylonjs';
+import { ArcRotateCamera, BackgroundMaterial, Color4, CubeTexture, HemisphericLight, MeshBuilder, Scene, Texture, Vector3, type Engine, type Mesh, type Node, type Nullable } from 'babylonjs';
 import { Assets } from './Assets';
 import { createDiorama } from './Diorama';
 
@@ -7,8 +7,8 @@ export function createPlayground(engine: Engine, canvas: HTMLCanvasElement): Sce
 	const scene = new Scene(engine);
 
 	// Create Camera
-	// const camera = new ArcRotateCamera('camera', 0, Math.PI / 4, 10, Vector3.Zero(), scene);
-	const camera = new FreeCamera("camera1", new Vector3(5, 3, 0), scene);
+	const camera = new ArcRotateCamera('camera', 0, Math.PI / 3, 5, Vector3.Zero(), scene);
+	// const camera = new FreeCamera("camera1", new Vector3(5, 3, 0), scene);
 	camera.setTarget(new Vector3(0, .7, 0));
 	camera.attachControl();
 	camera.speed = 0.35;
@@ -27,88 +27,41 @@ export function createPlayground(engine: Engine, canvas: HTMLCanvasElement): Sce
 	// skybox.infiniteDistance = true;
 
 	const sky = new BackgroundMaterial("skyBox", scene);
-	// sky.backFaceCulling = false;
+	sky.backFaceCulling = false;
 	sky.enableGroundProjection = true;
 
 	// Environment
 	scene.clearColor = new Color4(1, 1, 1, 1);
 	scene.environmentIntensity = 0.5;
 
-	let ground: Mesh;
-
 	// Create Assets
 	Assets.getInstance(scene).loadAssets().then((assets) => {
-		// Add skybox texture
-		sky.reflectionTexture = assets.getHDRCubeTexture('Skybox') as HDRCubeTexture;
+		// sky.reflectionTexture = assets.getHDRCubeTexture('Skybox') as HDRCubeTexture;
+		sky.reflectionTexture = CubeTexture.CreateFromPrefilteredData('./environment/sky.env', scene);
 		sky.reflectionTexture.coordinatesMode = Texture.SKYBOX_MODE;
 		skybox.material = sky;
 
 		createDiorama(scene, assets);
-		ground = scene.getMeshByName('Ground') as Mesh;
 	}).catch(console.error);
 
-
-	// Drag'n'drop ///////////////////////////////////////////////////////////
-	let startingPoint: Vector3 | null;
-	let currentMesh: Mesh;
-
-	function getGroundPosition() {
-		const pickinfo = scene.pick(scene.pointerX, scene.pointerY, (mesh) => mesh === ground);
-		if (pickinfo.hit) {
-			return pickinfo.pickedPoint;
-		}
-
-		return null;
+	// Pointer Events
+	let pickedMesh: Nullable<Node> | undefined;
+	scene.onPointerDown = (evt, pickInfo) => {
+		let m: Nullable<Node> | undefined = pickInfo.pickedMesh;
+		pickedMesh = m;
+		// biome-ignore lint/suspicious/noAssignInExpressions: <explanation>
+		while (m = m?.parent) pickedMesh = m;
 	};
-
-	function pointerDown(mesh: Mesh) {
-		currentMesh = mesh;
-		startingPoint = getGroundPosition();
-		if (startingPoint) { // we need to disconnect camera from canvas
-			console.log('down');
+	scene.onPointerMove = (evt, pickInfo) => {
+		if (pickedMesh) {
 			camera.detachControl();
+			(pickedMesh as Mesh).rotation.addInPlaceFromFloats(0, 0.01, 0);
 		}
 	};
-
-	function pointerUp() {
-		if (startingPoint) {
-			camera.attachControl();
-			startingPoint = null;
-			return;
-		}
+	scene.onPointerUp = () => {
+		pickedMesh = undefined;
+		camera.attachControl();
 	};
-
-	function pointerMove() {
-		if (!startingPoint) {
-			return;
-		}
-		const current = getGroundPosition();
-		if (!current) {
-			return;
-		}
-
-		const diff = current.subtract(startingPoint);
-		currentMesh.position.addInPlace(diff);
-
-		startingPoint = current;
-	}
-
-	scene.onPointerObservable.add((pointerInfo) => {
-		switch (pointerInfo.type) {
-			case PointerEventTypes.POINTERDOWN:
-				if (pointerInfo.pickInfo!.hit && pointerInfo.pickInfo!.pickedMesh !== ground) {
-					console.log(ground);
-					pointerDown(pointerInfo.pickInfo!.pickedMesh);
-				}
-				break;
-			case PointerEventTypes.POINTERUP:
-				pointerUp();
-				break;
-			case PointerEventTypes.POINTERMOVE:
-				pointerMove();
-				break;
-		}
-	});
 
 	return scene;
 }
